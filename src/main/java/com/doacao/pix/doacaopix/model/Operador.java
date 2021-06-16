@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,7 +17,6 @@ import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
 @Entity
 @Table(name = "TB_OPERADOR")
 public class Operador extends Pessoa {
@@ -32,5 +30,34 @@ public class Operador extends Pessoa {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @Column(name = "ULTIMO_ACESSO")
     private LocalDateTime ultimoAcesso;
+
+    public Operador(Operador.CustomBuilder builder) {
+        super(builder);
+        this.ultimoAcesso = builder.ultimoAcesso;
+    }
+
+    public static Operador.CustomBuilder builder() {
+        return new Operador.CustomBuilder();
+    }
+
+    public static class CustomBuilder extends Pessoa.CustomBuilder<Operador.CustomBuilder> {
+
+        private LocalDateTime ultimoAcesso;
+
+        @Override
+        public Operador.CustomBuilder getThis() {
+            return this;
+        }
+
+        public Operador.CustomBuilder ultimoAcesso(LocalDateTime ultimoAcesso) {
+            this.ultimoAcesso = ultimoAcesso;
+            return this;
+        }
+
+        public Operador build() {
+            return new Operador(this);
+        }
+
+    }
 
 }

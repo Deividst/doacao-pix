@@ -8,11 +8,12 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Data
-@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
-public abstract class Pessoa implements Serializable {
+public class Pessoa implements Serializable {
+
+    private static final long serialVersionUID = 1101537401328672138L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -40,5 +41,83 @@ public abstract class Pessoa implements Serializable {
 
     @Column(name = "ENDERECO")
     private String endereco;
+
+    protected Pessoa(CustomBuilder<?> builder) {
+        this.codigo = builder.codigo;
+        this.nome = builder.nome;
+        this.cpfCnpj = builder.cpfCnpj;
+        this.usuario = builder.usuario;
+        this.senha = builder.senha;
+        this.email = builder.email;
+        this.tipo = builder.tipo;
+        this.endereco = builder.endereco;
+    }
+
+    public static CustomBuilder builder() {
+        return new CustomBuilder() {
+            @Override
+            public CustomBuilder getThis() {
+                return this;
+            }
+        };
+    }
+
+    public abstract static class CustomBuilder<T extends CustomBuilder<T>> {
+        private Long codigo;
+        private String nome;
+        private String cpfCnpj;
+        private String usuario;
+        private String senha;
+        private String email;
+        private TipoUsuario tipo;
+        private String endereco;
+
+        public abstract T getThis();
+
+        public T codigo(Long codigo) {
+            this.codigo = codigo;
+            return this.getThis();
+        }
+
+        public T nome(String nome) {
+            this.nome = nome;
+            return this.getThis();
+        }
+
+        public T cpfCnpj(String cpfCnpj) {
+            this.cpfCnpj = cpfCnpj;
+            return this.getThis();
+        }
+
+        public T usuario(String usuario) {
+            this.usuario = usuario;
+            return this.getThis();
+        }
+
+        public T senha(String senha) {
+            this.senha = senha;
+            return this.getThis();
+        }
+
+        public T email(String email) {
+            this.email = email;
+            return this.getThis();
+        }
+
+        public T tipo(TipoUsuario tipo) {
+            this.tipo = tipo;
+            return this.getThis();
+        }
+
+        public T endereco(String endereco) {
+            this.endereco = endereco;
+            return this.getThis();
+        }
+
+
+        public Pessoa build() {
+            return new Pessoa(this);
+        }
+    }
 
 }

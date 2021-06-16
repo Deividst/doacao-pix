@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@SuperBuilder
+@Builder
 @Entity
 @Table(name = "TB_DOACAO")
 public class Doacao implements Serializable {
