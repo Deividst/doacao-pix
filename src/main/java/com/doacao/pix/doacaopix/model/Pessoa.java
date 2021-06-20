@@ -1,8 +1,8 @@
 package com.doacao.pix.doacaopix.model;
 
-import com.doacao.pix.doacaopix.enums.TipoUsuario;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -23,21 +23,14 @@ public class Pessoa implements Serializable {
     @Column(name = "NOME")
     private String nome;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private Usuario usuario;
+
     @Column(name = "CPF_CNPJ")
     private String cpfCnpj;
 
-    @Column(name = "NOME_USUARIO")
-    private String usuario;
-
-    @Column(name = "SENHA")
-    private String senha;
-
     @Column(name = "EMAIL")
     private String email;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "TIPO_USUARIO")
-    private TipoUsuario tipo;
 
     @Column(name = "ENDERECO")
     private String endereco;
@@ -47,9 +40,7 @@ public class Pessoa implements Serializable {
         this.nome = builder.nome;
         this.cpfCnpj = builder.cpfCnpj;
         this.usuario = builder.usuario;
-        this.senha = builder.senha;
         this.email = builder.email;
-        this.tipo = builder.tipo;
         this.endereco = builder.endereco;
     }
 
@@ -66,10 +57,8 @@ public class Pessoa implements Serializable {
         private Long codigo;
         private String nome;
         private String cpfCnpj;
-        private String usuario;
-        private String senha;
+        private Usuario usuario;
         private String email;
-        private TipoUsuario tipo;
         private String endereco;
 
         public abstract T getThis();
@@ -89,23 +78,13 @@ public class Pessoa implements Serializable {
             return this.getThis();
         }
 
-        public T usuario(String usuario) {
+        public T usuario(Usuario usuario) {
             this.usuario = usuario;
-            return this.getThis();
-        }
-
-        public T senha(String senha) {
-            this.senha = senha;
             return this.getThis();
         }
 
         public T email(String email) {
             this.email = email;
-            return this.getThis();
-        }
-
-        public T tipo(TipoUsuario tipo) {
-            this.tipo = tipo;
             return this.getThis();
         }
 

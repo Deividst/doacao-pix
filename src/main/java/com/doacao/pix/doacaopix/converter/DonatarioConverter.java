@@ -2,6 +2,10 @@ package com.doacao.pix.doacaopix.converter;
 
 import com.doacao.pix.doacaopix.dto.DonatarioDto;
 import com.doacao.pix.doacaopix.model.Donatario;
+import com.doacao.pix.doacaopix.model.Usuario;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.util.Base64;
 
 public class DonatarioConverter {
 
@@ -16,9 +20,12 @@ public class DonatarioConverter {
                 .email(dto.getEmail())
                 .endereco(dto.getCpfCnpj())
                 .nome(dto.getNome())
-                .senha(dto.getSenha())
-                .tipo(dto.getTipo())
-                .usuario(dto.getUsuario())
+                .usuario(Usuario.builder()
+                        .codigo(dto.getCodigoUsuario())
+                        .nome(dto.getUsuario())
+                        .senha(Base64.getEncoder().encodeToString(dto.getSenha().getBytes()))
+                        .tipo(dto.getTipo())
+                        .build())
                 .chavePix(dto.getChavePix())
                 .build();
     }
@@ -30,9 +37,10 @@ public class DonatarioConverter {
                 .email(entity.getEmail())
                 .endereco(entity.getCpfCnpj())
                 .nome(entity.getNome())
-                .senha(entity.getSenha())
-                .tipo(entity.getTipo())
-                .usuario(entity.getUsuario())
+                .tipo(entity.getUsuario().getTipo())
+                .usuario(entity.getUsuario().getNome())
+                .senha(new String(Base64.getDecoder().decode(entity.getUsuario().getSenha())))
+                .codigoUsuario(entity.getUsuario().getCodigo())
                 .chavePix(entity.getChavePix())
                 .build();
     }

@@ -7,6 +7,7 @@ import com.doacao.pix.doacaopix.dto.OperadorDto;
 import com.doacao.pix.doacaopix.model.Doador;
 import com.doacao.pix.doacaopix.model.Operador;
 import com.doacao.pix.doacaopix.repository.OperadorRepository;
+import com.doacao.pix.doacaopix.utils.NegocioException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -30,13 +31,13 @@ public class OperadorService {
     public OperadorDto atualizar(OperadorDto dto) {
         Optional<Operador> operador = this.operadorRepository.findById(dto.getCodigo());
         dto.setCodigo(operador.orElseThrow(EntityNotFoundException::new).getCodigo());
-        this.operadorRepository.save(OperadorConverter.toEntity(dto));
-        return dto;
+        Operador operadorSalvo = this.operadorRepository.save(OperadorConverter.toEntity(dto));
+        return OperadorConverter.toDto(operadorSalvo);
     }
 
     public OperadorDto buscarPorCodigo(Long codigo) {
-        return OperadorConverter.toDto(this.operadorRepository.findById(codigo)
-                .orElseThrow(EntityNotFoundException::new));
+        Optional<Operador> operador = this.operadorRepository.findById(codigo);
+        return operador.map(OperadorConverter::toDto).orElse(null);
     }
 
     public void excluir(Long codigo) {

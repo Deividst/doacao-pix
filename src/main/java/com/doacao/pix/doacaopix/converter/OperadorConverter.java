@@ -2,6 +2,10 @@ package com.doacao.pix.doacaopix.converter;
 
 import com.doacao.pix.doacaopix.dto.OperadorDto;
 import com.doacao.pix.doacaopix.model.Operador;
+import com.doacao.pix.doacaopix.model.Usuario;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.util.Base64;
 
 public class OperadorConverter {
 
@@ -16,9 +20,12 @@ public class OperadorConverter {
                 .email(dto.getEmail())
                 .endereco(dto.getCpfCnpj())
                 .nome(dto.getNome())
-                .senha(dto.getSenha())
-                .tipo(dto.getTipo())
-                .usuario(dto.getUsuario())
+                .usuario(Usuario.builder()
+                        .codigo(dto.getCodigoUsuario())
+                        .nome(dto.getUsuario())
+                        .senha(Base64.getEncoder().encodeToString(dto.getSenha().getBytes()))
+                        .tipo(dto.getTipo())
+                        .build())
                 .ultimoAcesso(dto.getUltimoAcesso())
                 .build();
     }
@@ -30,9 +37,10 @@ public class OperadorConverter {
                 .email(entity.getEmail())
                 .endereco(entity.getCpfCnpj())
                 .nome(entity.getNome())
-                .senha(entity.getSenha())
-                .tipo(entity.getTipo())
-                .usuario(entity.getUsuario())
+                .tipo(entity.getUsuario().getTipo())
+                .usuario(entity.getUsuario().getNome())
+                .senha(new String(Base64.getDecoder().decode(entity.getUsuario().getSenha())))
+                .codigoUsuario(entity.getUsuario().getCodigo())
                 .ultimoAcesso(entity.getUltimoAcesso())
                 .build();
     }

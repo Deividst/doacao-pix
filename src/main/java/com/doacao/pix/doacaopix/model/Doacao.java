@@ -38,7 +38,11 @@ public class Doacao implements Serializable {
 
     private BigDecimal valor;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "STATUS_DOACAO")
     private StatusDoacao statusDoacao;
+
+    @Column(name = "CODIGO_COBRANCA")
+    private String codigoCobranca;
 
 }

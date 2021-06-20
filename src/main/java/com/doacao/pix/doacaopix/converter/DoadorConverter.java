@@ -2,7 +2,10 @@ package com.doacao.pix.doacaopix.converter;
 
 import com.doacao.pix.doacaopix.dto.DoadorDto;
 import com.doacao.pix.doacaopix.model.Doador;
+import com.doacao.pix.doacaopix.model.Usuario;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.Base64;
 import java.util.Objects;
 
 public class DoadorConverter {
@@ -18,9 +21,12 @@ public class DoadorConverter {
                 .email(dto.getEmail())
                 .endereco(dto.getCpfCnpj())
                 .nome(dto.getNome())
-                .senha(dto.getSenha())
-                .tipo(dto.getTipo())
-                .usuario(dto.getUsuario())
+                .usuario(Usuario.builder()
+                        .codigo(dto.getCodigoUsuario())
+                        .nome(dto.getUsuario())
+                        .senha(Base64.getEncoder().encodeToString(dto.getSenha().getBytes()))
+                        .tipo(dto.getTipo())
+                        .build())
                 .doacaoList(Objects.isNull(dto.getDoacaoList()) ? null : DoacaoConverter.toEntityList(dto.getDoacaoList()))
                 .build();
     }
@@ -32,9 +38,10 @@ public class DoadorConverter {
                 .email(entity.getEmail())
                 .endereco(entity.getCpfCnpj())
                 .nome(entity.getNome())
-                .senha(entity.getSenha())
-                .tipo(entity.getTipo())
-                .usuario(entity.getUsuario())
+                .tipo(entity.getUsuario().getTipo())
+                .usuario(entity.getUsuario().getNome())
+                .senha(new String(Base64.getDecoder().decode(entity.getUsuario().getSenha())))
+                .codigoUsuario(entity.getUsuario().getCodigo())
                 .doacaoList(Objects.isNull(entity.getDoacaoList()) ? null : DoacaoConverter.toDtoList(entity.getDoacaoList()))
                 .build();
     }
